@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -35,6 +36,7 @@ public class WsManager implements IWsManager {
     private boolean isManualClose = false;         //是否为手动关闭websocket连接
     private WsStatusListener wsStatusListener;
     private Lock mLock;
+    private static final String TAG = "WsManager";
     private Handler wsMainHandler = new Handler(Looper.getMainLooper());
     private int reconnectCount = 0;   //重连次数
     private Runnable reconnectRunnable = new Runnable() {
@@ -133,14 +135,16 @@ public class WsManager implements IWsManager {
 
         @Override
         public void onFailure(WebSocket webSocket, final Throwable t, final Response response) {
-            Log.e("ppp" , "response" + response);
-            Log.e("ppp" , "Throwable" + t);
-            Log.e("ppp" , "Throwable getMessage" + t.getMessage());
+            Log.e(TAG , "response" + response);
+            Log.e(TAG , "Throwable" + t);
+            Log.e(TAG , "Throwable getMessage" + t.getMessage());
 
             if (isNetworkConnected(mContext)){
                 if (!TextUtils.isEmpty(t.getMessage()) && t.getMessage().equals("Socket closed")){
                     tryReconnect();
                 }else if (!TextUtils.isEmpty(t.getMessage()) && t.getMessage().contains("timed out")){
+                    tryReconnect();
+                }else if (t instanceof SocketTimeoutException){
                     tryReconnect();
                 }else {
                     setCurrentStatus(WsStatus.DISCONNECTED);
