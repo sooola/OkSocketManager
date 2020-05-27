@@ -229,18 +229,18 @@ public class WsManager implements IWsManager {
     }
 
     private void tryReconnect() {
-        Log.e("ppp" , "in tryReconnect ");
+        Log.e(TAG , "in tryReconnect ");
         if (!isNeedReconnect | isManualClose) {
             return;
         }
         if (MAX_RECONNECT_NUM > reconnectCount){
             setCurrentStatus(WsStatus.RECONNECT);
             long delay = RECONNECT_INTERVAL;
-            Log.e("ppp" , "delay " + delay);
+            Log.e(TAG , "delay " + delay);
             wsMainHandler.postDelayed(reconnectRunnable, delay);
             reconnectCount++;
         }else {
-            Log.d("WsManager" ,"超过最大重连次数 reconnectCount" + reconnectCount);
+            Log.d(TAG ,"超过最大重连次数 reconnectCount" + reconnectCount);
         }
     }
 

@@ -1,6 +1,9 @@
 package com.wei.socketdemo;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private WsManager wsManager;
     private TextView tv_content;
     private static String TAG = "MainActivity";
+
+    private Conn mConn = new Conn();
 
     private WsStatusListener wsStatusListener = new WsStatusListener() {
         @Override
@@ -87,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tv_content = findViewById(R.id.tv_content);
 
+        //开启后台socket方式启动
+//        Intent intent = new Intent(this, SocketService.class);
+//        bindService(intent, mConn, Context.BIND_AUTO_CREATE);
+
         findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String wsUrl = "wss://ehos.corsyn.com/ehospital/patient/msg/textImageWebSocket/sendUserId=ab7121ab31c4456e8cf023902152c5e1";
+                String wsUrl = "wss:// url";
 
                 wsManager = new WsManager.Builder(getBaseContext())
                         .client(new OkHttpClient().newBuilder()
@@ -115,6 +124,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    class Conn implements ServiceConnection {
+
+        WsManager serviceMessenger;
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder iBinder) {
+            SocketService.LocalBinder binder = (SocketService.LocalBinder)iBinder;
+            SocketService socketService = binder.getService();
+            if (socketService != null) {
+                serviceMessenger = socketService.getSocketManager();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    }
+
+
 
     private Spanned fromHtmlText(String s) {
         Spanned result;
