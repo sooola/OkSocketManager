@@ -25,7 +25,7 @@ import okio.ByteString;
 public class WsManager implements IWsManager {
 
     private final static int RECONNECT_INTERVAL = 10 * 1000;    //重连间隔 默认10s
-    private static int MAX_RECONNECT_NUM = 5;    //最大重连次数
+    private static int MAX_RECONNECT_NUM = 15;    //最大重连次数
     private String mWsUrl;
     private WebSocket mWebSocket;
     private Context mContext;
@@ -198,7 +198,10 @@ public class WsManager implements IWsManager {
 
 
     public void setWsStatusListener(WsStatusListener wsStatusListener) {
-        this.wsStatusListener = wsStatusListener;
+        if (this.wsStatusListener == null) {
+            this.wsStatusListener = wsStatusListener;
+        }
+
     }
 
     @Override
@@ -338,7 +341,7 @@ public class WsManager implements IWsManager {
 
         private Context mContext;
         private String wsUrl;
-        private int mReconnectNum = 5;
+        private int mReconnectNum = 15;
         private boolean needReconnect = true;
         private OkHttpClient mOkHttpClient;
 
