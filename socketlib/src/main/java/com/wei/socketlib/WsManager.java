@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.EOFException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -145,6 +146,8 @@ public class WsManager implements IWsManager {
                 }else if (!TextUtils.isEmpty(t.getMessage()) && t.getMessage().contains("timed out")){
                     tryReconnect();
                 }else if (t instanceof SocketTimeoutException){
+                    tryReconnect();
+                }else if (t instanceof EOFException){
                     tryReconnect();
                 }else {
                     setCurrentStatus(WsStatus.DISCONNECTED);
