@@ -15,6 +15,8 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.net.ssl.SSLException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -154,6 +156,8 @@ public class WsManager implements IWsManager {
                 }else if (t instanceof SocketException){
                     tryReconnect();
                 }else if (t instanceof ProtocolException){
+                    tryReconnect();
+                }else if (t instanceof SSLException){
                     tryReconnect();
                 }else {
                     setCurrentStatus(WsStatus.DISCONNECTED);
