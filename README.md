@@ -17,7 +17,7 @@ allprojects {
 ```
 2.在项目build.gradle 
 ```
-implementation 'com.github.sooola:OkSocketManager:1.2'
+implementation 'com.github.sooola:OkSocketManager:2.0'
 ```
 ## How to use
 
